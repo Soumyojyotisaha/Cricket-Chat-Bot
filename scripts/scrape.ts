@@ -7,7 +7,6 @@ interface LinkData {
   title: string;
   description: string;
   paragraphs: string;
-  // Add more fields as needed
 }
 
 async function scrapeLink(link: string): Promise<LinkData> {
@@ -15,11 +14,8 @@ async function scrapeLink(link: string): Promise<LinkData> {
     const response = await axios.get(link);
     const $ = cheerio.load(response.data);
 
-    // Extract data from HTML using Cheerio selectors
     const title = $('title').text().trim();
     const description = $('meta[name="description"]').attr('content') || '';
-
-    // Extract all text within the body
     const paragraphs = $('body').text().trim();
 
     const data: LinkData = {
@@ -29,7 +25,7 @@ async function scrapeLink(link: string): Promise<LinkData> {
       paragraphs,
     };
 
-    console.log('Scraped data:', data);
+    // console.log('Scraped data:', data);
     return data;
   } catch (error) {
     console.error(`Error scraping ${link}: ${error.message}`);
@@ -38,7 +34,6 @@ async function scrapeLink(link: string): Promise<LinkData> {
       title: 'Error',
       description: '',
       paragraphs: '',
-      // Add more error handling or fields as needed
     };
   }
 }
@@ -54,31 +49,36 @@ async function scrapeAllLinks(links: string[]): Promise<LinkData[]> {
   return scrapedData;
 }
 
-async function main() {
+(async () => {
   try {
-    // Load links from CSV file
     const linksCSV = fs.readFileSync('data/links.csv', 'utf-8');
     const links = linksCSV.split('\n').map((link) => link.trim());
 
-    // Scrape data from all links
-    const scrapedData = await scrapeAllLinks(links);
-
-    // Save scraped data to a new CSV file
-    const outputCSV = 'data/scraped_data.csv';
-    const header = 'url,title,description,paragraphs\n'; // Adjust the header based on your fields
-
-    fs.writeFileSync(outputCSV, header);
-
-    for (const data of scrapedData) {
-      const line = `"${data.url}","${data.title}","${data.description}","${data.paragraphs.replace(/"/g, '""')}"\n`; // Adjust based on your fields
-      fs.appendFileSync(outputCSV, line);
+    if (links.length === 0) {
+      throw new Error('No links found in the CSV file.');
     }
 
-    console.log('Scraping completed. Data saved to:', outputCSV);
+    const scrapedData = await scrapeAllLinks(links);
+
+    if (scrapedData.length === 0) {
+      throw new Error('No data scraped from the links.');
+    }
+
+    const outputJSON = 'scripts/pg.json';
+
+    const json = {
+      current_date: new Date().toISOString(),
+      length: scrapedData.reduce((acc, essay) => acc + essay.paragraphs.length, 0),
+      tokens: scrapedData.reduce((acc, essay) => acc + essay.paragraphs.split(' ').length, 0),
+      essays: scrapedData,
+    };
+
+    fs.mkdirSync('scripts', { recursive: true });
+    fs.writeFileSync(outputJSON, JSON.stringify(json, null, 2));
+
+    console.log('Scraping completed. Data saved to:', outputJSON);
   } catch (error) {
     console.error('Error:', error.message);
+    console.error('Stack Trace:', error.stack);
   }
-}
-
-// Run the main function
-main();
+})();
