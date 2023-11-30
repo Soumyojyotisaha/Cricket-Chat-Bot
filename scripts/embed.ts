@@ -6,6 +6,18 @@ import OpenAI from 'openai';
 
 loadEnvConfig("");
 
+const saveLastProcessedIndex = (index: number) => {
+  fs.writeFileSync('lastProcessedIndex.txt', index.toString());
+};
+
+const getLastProcessedIndex = (): number => {
+  try {
+    return parseInt(fs.readFileSync('lastProcessedIndex.txt', 'utf8')) || 0;
+  } catch (error) {
+    return 0;
+  }
+};
+
 const generateEmbeddings = async (essays: PGEssay[]) => {
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -17,7 +29,9 @@ const generateEmbeddings = async (essays: PGEssay[]) => {
     return;
   }
 
-  for (let i = 0; i < essays.length; i++) {
+  let lastProcessedIndex = getLastProcessedIndex();
+
+  for (let i = lastProcessedIndex; i < essays.length; i++) {
     const essay = essays[i];
     console.log('Processing section', i);
 
@@ -48,6 +62,7 @@ const generateEmbeddings = async (essays: PGEssay[]) => {
       console.error(`Error saving data for essay ${i}:`, error.message);
     } else {
       console.log(`Saved data for essay ${i}`);
+      saveLastProcessedIndex(i + 1);
     }
 
     await new Promise((resolve) => setTimeout(resolve, 400));
