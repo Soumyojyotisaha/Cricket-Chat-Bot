@@ -94,7 +94,7 @@ export default function Home() {
     setChunks(results);
 
     const prompt = endent`
-    Use the following passages to provide an answer to the query: "${query}"
+    Use the following paragraphs to provide an answer to the query: "${query}"
 
     ${results?.map((d: any) => d.content).join("\n\n")}
     `;
@@ -335,7 +335,7 @@ export default function Home() {
                   </>
                 )}
 
-                <div className="font-bold text-2xl mt-6">Passages</div>
+                <div className="font-bold text-2xl mt-6">Crickbuzz Data</div>
                 <div className="animate-pulse mt-2">
                   <div className="h-4 bg-gray-300 rounded"></div>
                   <div className="h-4 bg-gray-300 rounded mt-2"></div>
@@ -358,7 +358,7 @@ export default function Home() {
                         <div className="flex justify-between">
                           <div>
                             <div className="font-bold text-xl">{chunk.essay_title}</div>
-                            <div className="mt-1 font-bold text-sm">{chunk.essay_date}</div>
+                            {/* <div className="mt-1 font-bold text-sm">{chunk.essay_date}</div> */}
                           </div>
                           <a
                             className="hover:opacity-50 ml-2"
@@ -384,7 +384,7 @@ export default function Home() {
                       <div className="flex justify-between">
                         <div>
                           <div className="font-bold text-xl">{chunk.essay_title}</div>
-                          <div className="mt-1 font-bold text-sm">{chunk.essay_date}</div>
+                          {/* <div className="mt-1 font-bold text-sm">{chunk.essay_date}</div> */}
                         </div>
                         <a
                           className="hover:opacity-50 ml-2"
@@ -401,7 +401,7 @@ export default function Home() {
                 ))}
               </div>
             ) : (
-              <div className="mt-6 text-center text-lg">{`AI-powered search & chat for Paul Graham's essays.`}</div>
+              <div className="mt-6 text-center text-lg">{`AI-powered search & chat for World Cup 2023.`}</div>
             )}
           </div>
         </div>

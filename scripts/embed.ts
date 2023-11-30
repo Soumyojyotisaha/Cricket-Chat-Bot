@@ -2,7 +2,8 @@ import { PGEssay, PGJSON } from "@/types";
 import { loadEnvConfig } from "@next/env";
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
-import OpenAI from 'openai'; // Importing OpenAI from the updated package
+import OpenAI from 'openai';
+
 loadEnvConfig("");
 
 const generateEmbeddings = async (essays: PGEssay[]) => {
@@ -11,43 +12,55 @@ const generateEmbeddings = async (essays: PGEssay[]) => {
   });
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
+  if (!essays || !Array.isArray(essays)) {
+    console.error("Invalid essays data. Please check the structure of your JSON file.");
+    return;
+  }
+
   for (let i = 0; i < essays.length; i++) {
-    const section = essays[i];
-    for (let j = 0; j < section.chunks.length; j++) {
-      const chunk = section.chunks[j];
-      
-      const { essay_title, essay_url, essay_date, essay_thanks, content, content_length, content_tokens } = chunk;
+    const essay = essays[i];
+
+    const { url, title, description, paragraphs } = essay;
+
+    for (let j = 0; j < paragraphs.length; j++) {
+      const content = paragraphs[j];
 
       const embeddingResponse = await openai.embeddings.create({
         model: "text-embedding-ada-002",
         input: content
-      }) ;
+      });
 
       const [{ embedding }] = embeddingResponse.data;
       const { data, error } = await supabase
-        .from('test_pg')
-        .insert({
-          essay_title,
-          essay_url,
-          essay_date,
-          content,
-          content_tokens,
-          embedding
-        })
+        .from('crickbuzz_pg')
+        .insert([
+          {
+            essay_title: title,
+            essay_url: url,
+            essay_description: description,
+            essay_paragraph: paragraphs,
+            content_tokens: content.split(' ').length,
+            embedding,
+          }
+        ])
         .select("*");
 
       if (error) {
-        console.log('error');
+        console.error(`Error saving data for essay ${i}, paragraph ${j}:`, error.message);
       } else {
-        console.log('saved', i, j);
+        console.log(`Saved data for essay ${i}, paragraph ${j}`);
       }
 
       await new Promise((resolve) => setTimeout(resolve, 300));
     }
   }
-}
+};
 
 (async () => {
-  const json: PGJSON = JSON.parse(fs.readFileSync('scripts/pg.json', 'utf8'))
-  await generateEmbeddings(json.essays)
+  try {
+    const json: PGJSON = JSON.parse(fs.readFileSync('scripts/pg.json', 'utf8'));
+    await generateEmbeddings(json.essays);
+  } catch (error) {
+    console.error('Error reading or parsing JSON file:', error.message);
+  }
 })();

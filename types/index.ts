@@ -7,6 +7,8 @@ export enum OpenAIModel {
     url: string;
     date: string;
     thanks: string;
+    description:string;
+    paragraphs:string;
     content: string;
     length: number;
     tokens: number;
@@ -16,8 +18,8 @@ export enum OpenAIModel {
   export type PGChunk = {
     essay_title: string;
     essay_url: string;
-    essay_date: string;
-    essay_thanks: string;
+    essay_description:string;
+    essay_paragraph:string;
     content: string;
     content_length: number;
     content_tokens: number;

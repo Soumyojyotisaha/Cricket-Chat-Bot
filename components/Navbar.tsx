@@ -15,11 +15,11 @@ export const Navbar: FC = () => {
       <div>
         <a
           className="flex items-center hover:opacity-50"
-          href="http://www.paulgraham.com/articles.html"
+          href="https://www.cricbuzz.com/"
           target="_blank"
           rel="noreferrer"
         >
-          <div className="hidden sm:flex">Check Paul's Essays</div>
+          <div className="hidden sm:flex">CrickBuzz.com</div>
 
           <IconExternalLink
             className="ml-1"

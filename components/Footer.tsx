@@ -15,14 +15,14 @@ export const Footer: FC = () => {
         >
           Soumyojyoti Saha
         </a>
-        based on the essays of
+        based on data from
         <a
           className="hover:opacity-50 ml-1"
           href="https://twitter.com/paulg"
           target="_blank"
           rel="noreferrer"
         >
-          Paul Graham
+          Crickbuzz.com
         </a>
         .
       </div>
