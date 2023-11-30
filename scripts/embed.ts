@@ -19,40 +19,38 @@ const generateEmbeddings = async (essays: PGEssay[]) => {
 
   for (let i = 0; i < essays.length; i++) {
     const essay = essays[i];
+    console.log('Processing section', i);
 
     const { url, title, description, paragraphs } = essay;
+    const content = paragraphs;  // Concatenate all paragraphs into a single string
 
-    for (let j = 0; j < paragraphs.length; j++) {
-      const content = paragraphs[j];
+    const embeddingResponse = await openai.embeddings.create({
+      model: "text-embedding-ada-002",
+      input: content
+    });
 
-      const embeddingResponse = await openai.embeddings.create({
-        model: "text-embedding-ada-002",
-        input: content
-      });
+    const [{ embedding }] = embeddingResponse.data;
+    const { data, error } = await supabase
+      .from('crickbuzz_pg')
+      .insert([
+        {
+          essay_title: title,
+          essay_url: url,
+          essay_description: description,
+          essay_paragraph: content,
+          content_tokens: content.split(' ').length,
+          embedding,
+        }
+      ])
+      .select("*");
 
-      const [{ embedding }] = embeddingResponse.data;
-      const { data, error } = await supabase
-        .from('crickbuzz_pg')
-        .insert([
-          {
-            essay_title: title,
-            essay_url: url,
-            essay_description: description,
-            essay_paragraph: paragraphs,
-            content_tokens: content.split(' ').length,
-            embedding,
-          }
-        ])
-        .select("*");
-
-      if (error) {
-        console.error(`Error saving data for essay ${i}, paragraph ${j}:`, error.message);
-      } else {
-        console.log(`Saved data for essay ${i}, paragraph ${j}`);
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 300));
+    if (error) {
+      console.error(`Error saving data for essay ${i}:`, error.message);
+    } else {
+      console.log(`Saved data for essay ${i}`);
     }
+
+    await new Promise((resolve) => setTimeout(resolve, 400));
   }
 };
 
