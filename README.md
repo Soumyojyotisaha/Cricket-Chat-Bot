@@ -20,7 +20,7 @@ A project that leverages World Cup 2023 data from Crickbuzz.com, scraped and tra
 
 1. **Clone the Repository:**
    ```bash
-  git clone https://github.com/Soumyojyotisaha/Cricket-Chat-Bot.git
+   git clone https://github.com/Soumyojyotisaha/Cricket-Chat-Bot.git
    cd Cricket-Chat-Bot
    npm install
    npm run dev
