@@ -2,6 +2,11 @@
 
 A project that leverages World Cup 2023 data from Crickbuzz.com, scraped and transformed into embeddings using the "text-embedding-ada-002" model. The data is stored row-wise in an online database on supabase.com. The user interface includes a chatbot and research bot for processing user questions. The queries are converted into chunks, and similarity searches of embeddings are performed to identify keywords. The CHAT OPENAI Model 3.5 turbo then formulates suitable answers based on the identified keywords.
 
+##Database link:
+```bash
+https://supabase.com/dashboard/project/owjzzdbdtbxmzjfuvktr/editor/29257
+```
+
 ## Technologies Used
 
 - **Frameworks:**
