@@ -39,3 +39,8 @@ Replace the placeholders with your actual project details, and feel free to enha
 
 5.**ScreenShots:**
 ![UI](https://github.com/Soumyojyotisaha/Cricket-Chat-Bot/blob/main/ui1.png)
+![UI](https://github.com/Soumyojyotisaha/Cricket-Chat-Bot/blob/main/ui2.png)
+![DB](https://github.com/Soumyojyotisaha/Cricket-Chat-Bot/blob/main/ui3.png)
+![DB](https://github.com/Soumyojyotisaha/Cricket-Chat-Bot/blob/main/db1.png)
+![DB](https://github.com/Soumyojyotisaha/Cricket-Chat-Bot/blob/main/db2.png)
+
