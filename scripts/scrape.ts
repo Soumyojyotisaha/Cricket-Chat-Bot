@@ -28,7 +28,11 @@ async function scrapeLink(link: string): Promise<LinkData> {
     // console.log('Scraped data:', data);
     return data;
   } catch (error) {
-    console.error(`Error scraping ${link}: ${error.message}`);
+    if (error instanceof Error) {
+      console.error(`Error scraping ${link}: ${error.message}`);
+    } else {
+      console.error(`Error scraping ${link}:`, error);
+    }
     return {
       url: link,
       title: 'Error',
@@ -78,7 +82,11 @@ async function scrapeAllLinks(links: string[]): Promise<LinkData[]> {
 
     console.log('Scraping completed. Data saved to:', outputJSON);
   } catch (error) {
-    console.error('Error:', error.message);
-    console.error('Stack Trace:', error.stack);
+    if (error instanceof Error) {
+      console.error('Error:', error.message);
+      console.error('Stack Trace:', error.stack);
+    } else {
+      console.error('Unknown error:', error);
+    }
   }
 })();

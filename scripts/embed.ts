@@ -74,6 +74,10 @@ const generateEmbeddings = async (essays: PGEssay[]) => {
     const json: PGJSON = JSON.parse(fs.readFileSync('scripts/pg.json', 'utf8'));
     await generateEmbeddings(json.essays);
   } catch (error) {
-    console.error('Error reading or parsing JSON file:', error.message);
+    if (error instanceof Error) {
+      console.error('Error reading or parsing JSON file:', error.message);
+    } else {
+      console.error('Unknown error:', error);
+    }
   }
 })();
